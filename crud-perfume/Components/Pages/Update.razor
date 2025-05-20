@@ -1,0 +1,67 @@
+﻿@page "/editPerfume/{id:int}"
+
+@using crud_perfume.Models
+@using crud_perfume.Database
+@inject NavigationManager NavigationManager
+@inject DbContext Db
+
+<h3>Editar Perfume</h3>
+
+<EditForm Model="perfume" OnValidSubmit="Update">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Nome</label>
+                <InputText class="form-control" @bind-Value="perfume.Nome" />
+                <ValidationMessage For="@(() => perfume.Nome)" />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Volume</label>
+                <InputText class="form-control" @bind-Value="perfume.Volume" />
+                <ValidationMessage For="@(() => perfume.Volume)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mt-4">
+        <button type="submit" class="btn btn-primary">Salvar perfume</button>
+        <a href="/list" class="btn btn-danger">Voltar à lista</a>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private Perfume perfume = new Perfume();
+
+    protected override async Task OnInitializedAsync()
+    {
+        perfume = await Db.GetPerfume(id);
+        if (perfume == null)
+        {
+            // Redireciona se não encontrar
+            NavigationManager.NavigateTo("/list");
+        }
+    }
+
+    private async Task Update()
+    {
+        var result = await Db.UpdateAsync(perfume);
+        if (result > 0)
+        {
+            NavigationManager.NavigateTo("/list");
+        }
+        else
+        {
+            // Exibir erro (opcional: exibir usando modal/toast)
+            Console.WriteLine("Erro ao atualizar perfume.");
+        }
+    }
+}

@@ -1,0 +1,57 @@
+﻿@page "/deletePerfume/{id:int}"
+
+@using crud_perfume.Models
+@using crud_perfume.Database
+@inject NavigationManager NavigationManager
+@inject DbContext Db
+
+<h3>Excluir Perfume</h3>
+
+@if (perfume == null)
+{
+    <p><em>Carregando...</em></p>
+}
+else
+{
+    <div class="alert alert-warning">
+        Tem certeza que deseja excluir o perfume <strong>@perfume.Nome</strong> com volume <strong>@perfume.Volume</strong>?
+    </div>
+
+    <div class="form-group mt-4">
+        <button class="btn btn-danger" @onclick="Delete">Confirmar Exclusão</button>
+        <a href="/list" class="btn btn-secondary">Cancelar</a>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private Perfume? perfume;
+
+    protected override async Task OnInitializedAsync()
+    {
+        perfume = await Db.GetPerfume(id);
+        if (perfume == null)
+        {
+            // Redireciona se o perfume não for encontrado
+            NavigationManager.NavigateTo("/list");
+        }
+    }
+
+    private async Task Delete()
+    {
+        if (perfume is not null)
+        {
+            var result = await Db.DeletePerfume(perfume);
+            if (result > 0)
+            {
+                NavigationManager.NavigateTo("/list");
+            }
+            else
+            {
+                Console.WriteLine("Erro ao excluir perfume.");
+            }
+        }
+    }
+}

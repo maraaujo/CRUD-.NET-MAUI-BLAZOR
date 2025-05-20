@@ -1,4 +1,4 @@
-﻿@page "/lint"
+﻿@page "/list"
 @using crud-perfume.Models
 <h1>Perfumes</h1>
 
@@ -8,7 +8,10 @@
 }
 else
 {
-    <table class="table">
+   <div class="row"> 
+       <div class="col-md-12">
+           <p><a class="btn btn-primary" href="add">Adicionar Perfume</a></p>
+            <table class="table table-hover table-striped">
         <thead>
             <tr>
                 <th>Nome</th>
@@ -21,37 +24,26 @@ else
                 <tr>
                     <td>@perfume.Nome</td>
                     <td>@perfume.Volume</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td><a href="/updatePerfume/@perfume.Id" class="btn btn-primary"></a>Editar</td>
+                    <td><a  href="/deletePerfume/@perfume.Id" class="btn btn-danger"></a>Excluir</td>
+ 
                 </tr>
-            }ff
+            }
         </tbody>
     </table>
+        </div>
+    </div>
 }
 
 @code {
-    private List<Perume> perfumes;
+    private List<Mdoels.Perume> perfumes;
 
     protected override async Task OnInitializedAsync()
     {
         // Simulate asynchronous loading to demonstrate a loading indicator
         await Task.Delay(500);
-
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = startDate.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = summaries[Random.Shared.Next(summaries.Length)]
-            }).ToArray();
+        perfumes = App.Database.GetTableRows<Perfume>("Perfume");
     }
 
-    private class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
+    
 }
