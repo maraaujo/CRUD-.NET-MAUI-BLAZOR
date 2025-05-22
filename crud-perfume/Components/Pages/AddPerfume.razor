@@ -21,7 +21,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label">Volume</label>
-                <InputText class="form-control" @bind-Value="perfume.Volume" />
+                <InputText class="form-control" @bind-Value="perfume.double.Parse(Volume)" />
                 <ValidationMessage For="@(() => perfume.Volume)" />
             </div>
         </div>

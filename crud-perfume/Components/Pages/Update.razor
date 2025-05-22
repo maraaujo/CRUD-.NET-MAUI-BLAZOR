@@ -43,15 +43,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        perfume = await Db.GetPerfume(id);
+        perfume = await Db.GetByIdAsync<Perfume>(id);
         if (perfume == null)
         {
-            // Redireciona se não encontrar
             NavigationManager.NavigateTo("/list");
         }
     }
 
-    private async Task Update()
+
+    private async Task Update(int perfume)
     {
         var result = await Db.UpdateAsync(perfume);
         if (result > 0)
@@ -59,8 +59,7 @@
             NavigationManager.NavigateTo("/list");
         }
         else
-        {
-            // Exibir erro (opcional: exibir usando modal/toast)
+        {}
             Console.WriteLine("Erro ao atualizar perfume.");
         }
     }

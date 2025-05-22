@@ -30,20 +30,25 @@ namespace crud_perfume.Database
             await _dbConection.CreateTableAsync<Models.Perfume>();
         }
 
-        public List<T> GetTableRows (string tableName) where T : class
+
+        public List<T> GetTableRows<T>(string tableName) where T : class
         {
             object[] obj = new object[] { };
-            TableMapping map  = new TableMapping(Type.GetType(nameSpace + tableName);
-            string query = "SELECT * FROM ["+ tableName +"]" ;
-            return _dbConection.QueryAsync(map, query, obj).Result.Cast<T>.ToList();
+            TableMapping map = new TableMapping(Type.GetType(nameSpace + tableName));
+            string query = "SELECT * FROM [" + tableName + "]";
+            return _dbConection.QueryAsync(map, query, obj).Result.Cast<T>().ToList();
         }
-      
-        public object GetTableRow(string tableNmae, string colum, string value)
+
+        public async Task<TEntity> GetByIdAsync<TEntity>(int id) where TEntity : class, new()
+        {
+            return await _dbConection.FindAsync<TEntity>(id);
+        }
+        public object GetTableRow<T>(string tableNmae, string colum, string value)
         {
             object[] obj = new object[] { };
             TableMapping map = new TableMapping(Type.GetType(nameSpace + tableNmae));
             string query = "SELECT * FROM [" + tableNmae + "] WHERE [" + colum + "] = " + value;
-            return _dbConection.QueryAsync(map, query, obj).Result.Cast<T>.ToList();
+            return _dbConection.QueryAsync(map, query, obj).Result.Cast<T>().ToList();
         }
         public async Task<int> CreateAsync<TEntity>(TEntity entity) where TEntity : class
         {
@@ -57,7 +62,7 @@ namespace crud_perfume.Database
         {
             return await _dbConection.DeleteAsync(entity);
         }
-        public async Task<int> ArrOrUpdate<TEntity>(TEntity entity) where TEntity : class
+        public async Task<int> AddOrUpdate<TEntity>(TEntity entity) where TEntity : class
         {
             return await _dbConection.InsertOrReplaceAsync(entity);
         }

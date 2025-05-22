@@ -13,7 +13,7 @@ namespace crud_perfume.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
+        public string Nome { get; set; }
         [Required]
         public double Volume { get; set; }
     }
